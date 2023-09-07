@@ -79,9 +79,9 @@ if __name__ == "__main__":
     episodic_return = 0
     for _ in range(200):
         action = env.action_space.sample() # sample an action to step env
-        observation, reward, done, info = env.step(action)
+        observation, reward, terminated, truncated, info = env.step(action)
         episodic_return += reward
-        if done:
+        if terminated or truncated:
             observation = env.reset()
             print(f"episodic return: {episodic_return}")
             episodic_return = 0
