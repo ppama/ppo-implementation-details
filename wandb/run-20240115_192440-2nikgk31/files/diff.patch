@@ -1,0 +1,62 @@
+diff --git a/ppo_continuous_action.py b/ppo_continuous_action.py
+index d69d8c7..bdbcfc5 100644
+--- a/ppo_continuous_action.py
++++ b/ppo_continuous_action.py
+@@ -5,14 +5,16 @@ import time
+ from distutils.util import strtobool
+ 
+ import gym
++import pybullet_envs
+ import numpy as np
+-import pybullet_envs  # noqa
+ import torch
+ import torch.nn as nn
+ import torch.optim as optim
+-from torch.distributions.normal import Normal
++from torch.distributions.categorical import Categorical
+ from torch.utils.tensorboard import SummaryWriter
++from torch.distributions.normal import Normal
+ 
++os.environ['PYOPENGL_PLATFORM'] = 'egl'
+ 
+ def parse_args():
+     # fmt: off
+@@ -85,11 +87,6 @@ def make_env(gym_id, seed, idx, capture_video, run_name):
+         if capture_video:
+             if idx == 0:
+                 env = gym.wrappers.RecordVideo(env, f"videos/{run_name}")
+-        env = gym.wrappers.ClipAction(env)
+-        env = gym.wrappers.NormalizeObservation(env)
+-        env = gym.wrappers.TransformObservation(env, lambda obs: np.clip(obs, -10, 10))
+-        env = gym.wrappers.NormalizeReward(env)
+-        env = gym.wrappers.TransformReward(env, lambda reward: np.clip(reward, -10, 10))
+         env.seed(seed)
+         env.action_space.seed(seed)
+         env.observation_space.seed(seed)
+diff --git a/wandb/debug-internal.log b/wandb/debug-internal.log
+index 008bac9..bb75ec3 120000
+--- a/wandb/debug-internal.log
++++ b/wandb/debug-internal.log
+@@ -1 +1 @@
+-run-20240115_172901-14lwxexy/logs/debug-internal.log
+\ No newline at end of file
++run-20240115_192440-2nikgk31/logs/debug-internal.log
+\ No newline at end of file
+diff --git a/wandb/debug.log b/wandb/debug.log
+index 8a954db..18efd57 120000
+--- a/wandb/debug.log
++++ b/wandb/debug.log
+@@ -1 +1 @@
+-run-20240115_172901-14lwxexy/logs/debug.log
+\ No newline at end of file
++run-20240115_192440-2nikgk31/logs/debug.log
+\ No newline at end of file
+diff --git a/wandb/latest-run b/wandb/latest-run
+index ff01f2b..94517d9 120000
+--- a/wandb/latest-run
++++ b/wandb/latest-run
+@@ -1 +1 @@
+-run-20240115_172901-14lwxexy
+\ No newline at end of file
++run-20240115_192440-2nikgk31
+\ No newline at end of file

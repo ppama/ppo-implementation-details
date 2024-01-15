@@ -1,0 +1,21 @@
+argv[0]=
+argv[0]=
+pybullet build time: Nov 28 2023 23:52:03
+Traceback (most recent call last):
+  File "/home/mirai1/ppo-implementation-details/ppo_continuous_action.py", line 185, in <module>
+    next_obs = torch.Tensor(envs.reset()).to(device)
+  File "/home/mirai1/anaconda3/envs/ppo_implementation_details/lib/python3.9/site-packages/gym/vector/vector_env.py", line 62, in reset
+    return self.reset_wait()
+  File "/home/mirai1/anaconda3/envs/ppo_implementation_details/lib/python3.9/site-packages/gym/vector/sync_vector_env.py", line 69, in reset_wait
+    observation = env.reset()
+  File "/home/mirai1/anaconda3/envs/ppo_implementation_details/lib/python3.9/site-packages/gym/wrappers/record_video.py", line 58, in reset
+    self.start_video_recorder()
+  File "/home/mirai1/anaconda3/envs/ppo_implementation_details/lib/python3.9/site-packages/gym/wrappers/record_video.py", line 75, in start_video_recorder
+    self.video_recorder.capture_frame()
+  File "/home/mirai1/anaconda3/envs/ppo_implementation_details/lib/python3.9/site-packages/gym/wrappers/monitoring/video_recorder.py", line 151, in capture_frame
+    self._encode_image_frame(frame)
+  File "/home/mirai1/anaconda3/envs/ppo_implementation_details/lib/python3.9/site-packages/gym/wrappers/monitoring/video_recorder.py", line 208, in _encode_image_frame
+    self.encoder = ImageEncoder(
+  File "/home/mirai1/anaconda3/envs/ppo_implementation_details/lib/python3.9/site-packages/gym/wrappers/monitoring/video_recorder.py", line 336, in __init__
+    raise error.DependencyNotInstalled(
+gym.error.DependencyNotInstalled: Found neither the ffmpeg nor avconv executables. On OS X, you can install ffmpeg via `brew install ffmpeg`. On most Ubuntu variants, `sudo apt-get install ffmpeg` should do it. On Ubuntu 14.04, however, you'll need to install avconv with `sudo apt-get install libav-tools`. Alternatively, please install imageio-ffmpeg with `pip install imageio-ffmpeg`

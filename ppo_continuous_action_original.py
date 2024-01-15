@@ -5,16 +5,14 @@ import time
 from distutils.util import strtobool
 
 import gym
-import pybullet_envs
 import numpy as np
+import pybullet_envs  # noqa
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from torch.distributions.categorical import Categorical
-from torch.utils.tensorboard import SummaryWriter
 from torch.distributions.normal import Normal
+from torch.utils.tensorboard import SummaryWriter
 
-os.environ['PYOPENGL_PLATFORM'] = 'egl'
 
 def parse_args():
     # fmt: off
@@ -79,6 +77,7 @@ def parse_args():
     # fmt: on
     return args
 
+
 def make_env(gym_id, seed, idx, capture_video, run_name):
     def thunk():
         env = gym.make(gym_id)
@@ -86,7 +85,7 @@ def make_env(gym_id, seed, idx, capture_video, run_name):
         if capture_video:
             if idx == 0:
                 env = gym.wrappers.RecordVideo(env, f"videos/{run_name}")
-        env = gym.wrappers.ClipAction(env) #environment preprocessing
+        env = gym.wrappers.ClipAction(env)
         env = gym.wrappers.NormalizeObservation(env)
         env = gym.wrappers.TransformObservation(env, lambda obs: np.clip(obs, -10, 10))
         env = gym.wrappers.NormalizeReward(env)
