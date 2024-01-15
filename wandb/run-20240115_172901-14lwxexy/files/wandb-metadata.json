@@ -1,0 +1,27 @@
+{
+    "os": "Linux-6.5.0-14-generic-x86_64-with-glibc2.35",
+    "python": "3.9.5",
+    "heartbeatAt": "2024-01-15T08:29:01.652170",
+    "startedAt": "2024-01-15T08:29:01.084839",
+    "docker": null,
+    "gpu": "NVIDIA GeForce RTX 4070 Laptop GPU",
+    "gpu_count": 1,
+    "cpu_count": 24,
+    "cuda": null,
+    "args": [
+        "--track",
+        "--capture-video"
+    ],
+    "state": "running",
+    "program": "/home/mirai1/ppo-implementation-details/ppo_original.py",
+    "codePath": "ppo_original.py",
+    "git": {
+        "remote": "git@github.com:ppama/ppo-implementation-details.git",
+        "commit": "5c0e4fe43ce55ee46dd55c8b4adf34c6692cc193"
+    },
+    "email": "pbnpama@gmail.com",
+    "root": "/home/mirai1/ppo-implementation-details",
+    "host": "moonshot-laptop",
+    "username": "mirai1",
+    "executable": "/home/mirai1/anaconda3/envs/ppo_implementation_details/bin/python"
+}

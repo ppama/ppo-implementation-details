@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/home/mirai1/ppo-implementation-details/ppo.py", line 247, in <module>
+    for epoch in range(args.update_epochs):
+AttributeError: 'Namespace' object has no attribute 'update_epochs'

@@ -1,0 +1,44 @@
+libGL error: MESA-LOADER: failed to open radeonsi: /usr/lib/dri/radeonsi_dri.so: cannot open shared object file: No such file or directory (search paths /usr/lib/x86_64-linux-gnu/dri:\$${ORIGIN}/dri:/usr/lib/dri, suffix _dri)
+libGL error: failed to load driver: radeonsi
+libGL error: MESA-LOADER: failed to open radeonsi: /usr/lib/dri/radeonsi_dri.so: cannot open shared object file: No such file or directory (search paths /usr/lib/x86_64-linux-gnu/dri:\$${ORIGIN}/dri:/usr/lib/dri, suffix _dri)
+libGL error: failed to load driver: radeonsi
+libGL error: MESA-LOADER: failed to open swrast: /usr/lib/dri/swrast_dri.so: cannot open shared object file: No such file or directory (search paths /usr/lib/x86_64-linux-gnu/dri:\$${ORIGIN}/dri:/usr/lib/dri, suffix _dri)
+libGL error: failed to load driver: swrast
+Traceback (most recent call last):
+  File "/home/mirai1/ppo-implementation-details/ppo_original.py", line 179, in <module>
+    next_obs = torch.Tensor(envs.reset()).to(device)
+  File "/home/mirai1/anaconda3/envs/ppo_implementation_details/lib/python3.9/site-packages/gym/vector/vector_env.py", line 62, in reset
+    return self.reset_wait()
+  File "/home/mirai1/anaconda3/envs/ppo_implementation_details/lib/python3.9/site-packages/gym/vector/sync_vector_env.py", line 69, in reset_wait
+    observation = env.reset()
+  File "/home/mirai1/anaconda3/envs/ppo_implementation_details/lib/python3.9/site-packages/gym/wrappers/record_video.py", line 58, in reset
+    self.start_video_recorder()
+  File "/home/mirai1/anaconda3/envs/ppo_implementation_details/lib/python3.9/site-packages/gym/wrappers/record_video.py", line 75, in start_video_recorder
+    self.video_recorder.capture_frame()
+  File "/home/mirai1/anaconda3/envs/ppo_implementation_details/lib/python3.9/site-packages/gym/wrappers/monitoring/video_recorder.py", line 132, in capture_frame
+    frame = self.env.render(mode=render_mode)
+  File "/home/mirai1/anaconda3/envs/ppo_implementation_details/lib/python3.9/site-packages/gym/core.py", line 295, in render
+    return self.env.render(mode, **kwargs)
+  File "/home/mirai1/anaconda3/envs/ppo_implementation_details/lib/python3.9/site-packages/gym/core.py", line 295, in render
+    return self.env.render(mode, **kwargs)
+  File "/home/mirai1/anaconda3/envs/ppo_implementation_details/lib/python3.9/site-packages/gym/envs/classic_control/cartpole.py", line 179, in render
+    from gym.envs.classic_control import rendering
+  File "/home/mirai1/anaconda3/envs/ppo_implementation_details/lib/python3.9/site-packages/gym/envs/classic_control/rendering.py", line 27, in <module>
+    from pyglet.gl import *
+  File "/home/mirai1/anaconda3/envs/ppo_implementation_details/lib/python3.9/site-packages/pyglet/gl/__init__.py", line 232, in <module>
+    import pyglet.window
+  File "/home/mirai1/anaconda3/envs/ppo_implementation_details/lib/python3.9/site-packages/pyglet/window/__init__.py", line 1918, in <module>
+    gl._create_shadow_window()
+  File "/home/mirai1/anaconda3/envs/ppo_implementation_details/lib/python3.9/site-packages/pyglet/gl/__init__.py", line 206, in _create_shadow_window
+    _shadow_window = Window(width=1, height=1, visible=False)
+  File "/home/mirai1/anaconda3/envs/ppo_implementation_details/lib/python3.9/site-packages/pyglet/window/xlib/__init__.py", line 171, in __init__
+    super(XlibWindow, self).__init__(*args, **kwargs)
+  File "/home/mirai1/anaconda3/envs/ppo_implementation_details/lib/python3.9/site-packages/pyglet/window/__init__.py", line 615, in __init__
+    context = config.create_context(gl.current_context)
+  File "/home/mirai1/anaconda3/envs/ppo_implementation_details/lib/python3.9/site-packages/pyglet/gl/xlib.py", line 204, in create_context
+    return XlibContextARB(self, share)
+  File "/home/mirai1/anaconda3/envs/ppo_implementation_details/lib/python3.9/site-packages/pyglet/gl/xlib.py", line 314, in __init__
+    super(XlibContext13, self).__init__(config, share)
+  File "/home/mirai1/anaconda3/envs/ppo_implementation_details/lib/python3.9/site-packages/pyglet/gl/xlib.py", line 218, in __init__
+    raise gl.ContextException('Could not create GL context')
+pyglet.gl.ContextException: Could not create GL context

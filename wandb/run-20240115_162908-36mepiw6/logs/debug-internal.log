@@ -1,0 +1,185 @@
+2024-01-15 16:29:08,406 INFO    MainThread:13090 [internal.py:wandb_internal():86] W&B internal server running at pid: 13090, started at: 2024-01-15 16:29:08.406214
+2024-01-15 16:29:08,407 DEBUG   HandlerThread:13090 [handler.py:handle_request():126] handle_request: check_version
+2024-01-15 16:29:08,407 INFO    WriterThread:13090 [datastore.py:open_for_write():77] open: /home/mirai1/ppo-implementation-details/wandb/run-20240115_162908-36mepiw6/run-36mepiw6.wandb
+2024-01-15 16:29:08,408 DEBUG   SenderThread:13090 [sender.py:send():182] send: header
+2024-01-15 16:29:08,408 DEBUG   SenderThread:13090 [sender.py:send_request():196] send_request: check_version
+2024-01-15 16:29:08,455 DEBUG   SenderThread:13090 [sender.py:send():182] send: run
+2024-01-15 16:29:08,724 INFO    SenderThread:13090 [dir_watcher.py:__init__():169] watching files in: /home/mirai1/ppo-implementation-details/wandb/run-20240115_162908-36mepiw6/files
+2024-01-15 16:29:08,724 INFO    SenderThread:13090 [sender.py:_start_run_threads():740] run started: 36mepiw6 with start time 1705303748
+2024-01-15 16:29:08,725 DEBUG   SenderThread:13090 [sender.py:send():182] send: summary
+2024-01-15 16:29:08,725 INFO    SenderThread:13090 [sender.py:_save_file():873] saving file wandb-summary.json with policy end
+2024-01-15 16:29:08,725 DEBUG   HandlerThread:13090 [handler.py:handle_request():126] handle_request: run_start
+2024-01-15 16:29:08,731 DEBUG   HandlerThread:13090 [meta.py:__init__():40] meta init
+2024-01-15 16:29:08,731 DEBUG   HandlerThread:13090 [meta.py:__init__():54] meta init done
+2024-01-15 16:29:08,731 DEBUG   HandlerThread:13090 [meta.py:probe():211] probe
+2024-01-15 16:29:08,737 DEBUG   HandlerThread:13090 [meta.py:_setup_git():201] setup git
+2024-01-15 16:29:08,748 DEBUG   HandlerThread:13090 [meta.py:_setup_git():208] setup git done
+2024-01-15 16:29:08,748 DEBUG   HandlerThread:13090 [meta.py:_save_code():90] save code
+2024-01-15 16:29:08,753 DEBUG   HandlerThread:13090 [meta.py:_save_code():111] save code done
+2024-01-15 16:29:08,753 DEBUG   HandlerThread:13090 [meta.py:_save_patches():128] save patches
+2024-01-15 16:29:08,811 DEBUG   HandlerThread:13090 [meta.py:_save_patches():170] save patches done
+2024-01-15 16:29:08,811 DEBUG   HandlerThread:13090 [meta.py:_save_pip():58] save pip
+2024-01-15 16:29:08,811 DEBUG   HandlerThread:13090 [meta.py:_save_pip():72] save pip done
+2024-01-15 16:29:08,811 DEBUG   HandlerThread:13090 [meta.py:_save_conda():79] save conda
+2024-01-15 16:29:08,814 ERROR   HandlerThread:13090 [meta.py:_save_conda():86] Error saving conda packages
+Traceback (most recent call last):
+  File "/home/mirai1/anaconda3/envs/ppo_implementation_details/lib/python3.9/site-packages/wandb/sdk/internal/meta.py", line 84, in _save_conda
+    subprocess.call(["conda", "env", "export"], stdout=f)
+  File "/home/mirai1/anaconda3/envs/ppo_implementation_details/lib/python3.9/subprocess.py", line 349, in call
+    with Popen(*popenargs, **kwargs) as p:
+  File "/home/mirai1/anaconda3/envs/ppo_implementation_details/lib/python3.9/subprocess.py", line 951, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "/home/mirai1/anaconda3/envs/ppo_implementation_details/lib/python3.9/subprocess.py", line 1821, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+FileNotFoundError: [Errno 2] No such file or directory: 'conda'
+2024-01-15 16:29:08,815 DEBUG   HandlerThread:13090 [meta.py:_save_conda():87] save conda done
+2024-01-15 16:29:08,815 DEBUG   HandlerThread:13090 [meta.py:probe():249] probe done
+2024-01-15 16:29:08,833 DEBUG   SenderThread:13090 [sender.py:send():182] send: files
+2024-01-15 16:29:08,833 INFO    SenderThread:13090 [sender.py:_save_file():873] saving file wandb-metadata.json with policy now
+2024-01-15 16:29:08,833 INFO    SenderThread:13090 [sender.py:_save_file():873] saving file code/ppo.py with policy now
+2024-01-15 16:29:08,833 INFO    SenderThread:13090 [sender.py:_save_file():873] saving file diff.patch with policy now
+2024-01-15 16:29:08,835 DEBUG   HandlerThread:13090 [handler.py:handle_request():126] handle_request: stop_status
+2024-01-15 16:29:08,836 DEBUG   SenderThread:13090 [sender.py:send_request():196] send_request: stop_status
+2024-01-15 16:29:08,837 INFO    HandlerThread:13090 [handler.py:handle_tbrecord():592] handling tbrecord: tbrecord {
+  log_dir: "runs/CartPole-v1__ppo__1__1705303747"
+  save: true
+}
+
+2024-01-15 16:29:08,838 DEBUG   HandlerThread:13090 [config_util.py:dict_from_config_file():101] no default config file found in config-defaults.yaml
+2024-01-15 16:29:09,069 DEBUG   SenderThread:13090 [sender.py:send():182] send: tbrecord
+2024-01-15 16:29:09,070 DEBUG   SenderThread:13090 [sender.py:send():182] send: files
+2024-01-15 16:29:09,070 INFO    SenderThread:13090 [sender.py:_save_file():873] saving file events.out.tfevents.1705303748.moonshot-laptop.13047.0 with policy live
+2024-01-15 16:29:09,122 INFO    Thread-12 :13090 [upload_job.py:push():117] Skipped uploading /tmp/tmps9jy5nliwandb/1d5dptz9-code/ppo.py
+2024-01-15 16:29:09,444 INFO    Thread-11 :13090 [upload_job.py:push():137] Uploaded file /tmp/tmps9jy5nliwandb/1sk43ym9-wandb-metadata.json
+2024-01-15 16:29:09,568 INFO    Thread-16 :13090 [upload_job.py:push():137] Uploaded file /tmp/tmps9jy5nliwandb/328756tj-events.out.tfevents.1705303748.moonshot-laptop.13047.0
+2024-01-15 16:29:09,725 INFO    Thread-8  :13090 [dir_watcher.py:_on_file_created():217] file/dir created: /home/mirai1/ppo-implementation-details/wandb/run-20240115_162908-36mepiw6/files/conda-environment.yaml
+2024-01-15 16:29:09,725 INFO    Thread-8  :13090 [dir_watcher.py:_on_file_created():217] file/dir created: /home/mirai1/ppo-implementation-details/wandb/run-20240115_162908-36mepiw6/files/requirements.txt
+2024-01-15 16:29:09,725 INFO    Thread-8  :13090 [dir_watcher.py:_on_file_created():217] file/dir created: /home/mirai1/ppo-implementation-details/wandb/run-20240115_162908-36mepiw6/files/wandb-summary.json
+2024-01-15 16:29:09,725 INFO    Thread-8  :13090 [dir_watcher.py:_on_file_created():217] file/dir created: /home/mirai1/ppo-implementation-details/wandb/run-20240115_162908-36mepiw6/files/output.log
+2024-01-15 16:29:09,725 INFO    Thread-8  :13090 [dir_watcher.py:_on_file_created():217] file/dir created: /home/mirai1/ppo-implementation-details/wandb/run-20240115_162908-36mepiw6/files/events.out.tfevents.1705303748.moonshot-laptop.13047.0
+2024-01-15 16:29:09,725 INFO    Thread-8  :13090 [dir_watcher.py:_on_file_created():217] file/dir created: /home/mirai1/ppo-implementation-details/wandb/run-20240115_162908-36mepiw6/files/code/ppo.py
+2024-01-15 16:29:09,725 INFO    Thread-8  :13090 [dir_watcher.py:_on_file_created():217] file/dir created: /home/mirai1/ppo-implementation-details/wandb/run-20240115_162908-36mepiw6/files/diff.patch
+2024-01-15 16:29:09,725 INFO    Thread-8  :13090 [dir_watcher.py:_on_file_created():217] file/dir created: /home/mirai1/ppo-implementation-details/wandb/run-20240115_162908-36mepiw6/files/wandb-metadata.json
+2024-01-15 16:29:09,725 INFO    Thread-8  :13090 [dir_watcher.py:_on_file_created():217] file/dir created: /home/mirai1/ppo-implementation-details/wandb/run-20240115_162908-36mepiw6/files/code
+2024-01-15 16:29:10,282 INFO    Thread-14 :13090 [upload_job.py:push():137] Uploaded file /tmp/tmps9jy5nliwandb/1utvz5m4-diff.patch
+2024-01-15 16:29:11,345 DEBUG   HandlerThread:13090 [handler.py:handle_request():126] handle_request: poll_exit
+2024-01-15 16:29:11,345 DEBUG   SenderThread:13090 [sender.py:send():182] send: telemetry
+2024-01-15 16:29:11,345 DEBUG   SenderThread:13090 [sender.py:send():182] send: exit
+2024-01-15 16:29:11,345 INFO    SenderThread:13090 [sender.py:send_exit():291] handling exit code: 1
+2024-01-15 16:29:11,345 INFO    SenderThread:13090 [sender.py:send_exit():293] handling runtime: 2
+2024-01-15 16:29:11,345 INFO    SenderThread:13090 [sender.py:_save_file():873] saving file wandb-summary.json with policy end
+2024-01-15 16:29:11,346 INFO    SenderThread:13090 [sender.py:send_exit():303] send defer
+2024-01-15 16:29:11,346 DEBUG   SenderThread:13090 [sender.py:send_request():196] send_request: poll_exit
+2024-01-15 16:29:11,346 DEBUG   HandlerThread:13090 [handler.py:handle_request():126] handle_request: defer
+2024-01-15 16:29:11,346 INFO    HandlerThread:13090 [handler.py:handle_request_defer():143] handle defer: 0
+2024-01-15 16:29:11,346 DEBUG   SenderThread:13090 [sender.py:send_request():196] send_request: defer
+2024-01-15 16:29:11,346 INFO    SenderThread:13090 [sender.py:send_request_defer():312] handle sender defer: 0
+2024-01-15 16:29:11,346 INFO    SenderThread:13090 [sender.py:transition_state():316] send defer: 1
+2024-01-15 16:29:11,346 DEBUG   HandlerThread:13090 [handler.py:handle_request():126] handle_request: defer
+2024-01-15 16:29:11,346 INFO    HandlerThread:13090 [handler.py:handle_request_defer():143] handle defer: 1
+2024-01-15 16:29:11,378 DEBUG   SenderThread:13090 [sender.py:send_request():196] send_request: defer
+2024-01-15 16:29:11,378 INFO    SenderThread:13090 [sender.py:send_request_defer():312] handle sender defer: 1
+2024-01-15 16:29:11,378 INFO    SenderThread:13090 [sender.py:transition_state():316] send defer: 2
+2024-01-15 16:29:11,378 DEBUG   SenderThread:13090 [sender.py:send():182] send: stats
+2024-01-15 16:29:11,378 DEBUG   HandlerThread:13090 [handler.py:handle_request():126] handle_request: defer
+2024-01-15 16:29:11,378 INFO    HandlerThread:13090 [handler.py:handle_request_defer():143] handle defer: 2
+2024-01-15 16:29:11,725 INFO    Thread-8  :13090 [dir_watcher.py:_on_file_modified():230] file/dir modified: /home/mirai1/ppo-implementation-details/wandb/run-20240115_162908-36mepiw6/files/wandb-summary.json
+2024-01-15 16:29:11,725 INFO    Thread-8  :13090 [dir_watcher.py:_on_file_modified():230] file/dir modified: /home/mirai1/ppo-implementation-details/wandb/run-20240115_162908-36mepiw6/files/output.log
+2024-01-15 16:29:17,864 DEBUG   SenderThread:13090 [sender.py:send_request():196] send_request: defer
+2024-01-15 16:29:17,864 DEBUG   HandlerThread:13090 [handler.py:handle_request():126] handle_request: poll_exit
+2024-01-15 16:29:17,864 INFO    SenderThread:13090 [sender.py:send_request_defer():312] handle sender defer: 2
+2024-01-15 16:29:17,864 INFO    SenderThread:13090 [sender.py:transition_state():316] send defer: 3
+2024-01-15 16:29:17,864 DEBUG   SenderThread:13090 [sender.py:send_request():196] send_request: poll_exit
+2024-01-15 16:29:17,865 DEBUG   HandlerThread:13090 [handler.py:handle_request():126] handle_request: poll_exit
+2024-01-15 16:29:17,865 DEBUG   HandlerThread:13090 [handler.py:handle_request():126] handle_request: defer
+2024-01-15 16:29:17,865 DEBUG   SenderThread:13090 [sender.py:send_request():196] send_request: poll_exit
+2024-01-15 16:29:17,865 INFO    HandlerThread:13090 [handler.py:handle_request_defer():143] handle defer: 3
+2024-01-15 16:29:17,865 DEBUG   SenderThread:13090 [sender.py:send():182] send: history
+2024-01-15 16:29:17,865 DEBUG   SenderThread:13090 [sender.py:send():182] send: summary
+2024-01-15 16:29:17,866 INFO    SenderThread:13090 [sender.py:_save_file():873] saving file wandb-summary.json with policy end
+2024-01-15 16:29:17,866 DEBUG   SenderThread:13090 [sender.py:send():182] send: summary
+2024-01-15 16:29:17,869 INFO    SenderThread:13090 [sender.py:_save_file():873] saving file wandb-summary.json with policy end
+2024-01-15 16:29:17,869 DEBUG   SenderThread:13090 [sender.py:send_request():196] send_request: defer
+2024-01-15 16:29:17,869 INFO    SenderThread:13090 [sender.py:send_request_defer():312] handle sender defer: 3
+2024-01-15 16:29:17,869 INFO    SenderThread:13090 [sender.py:transition_state():316] send defer: 4
+2024-01-15 16:29:17,869 DEBUG   HandlerThread:13090 [handler.py:handle_request():126] handle_request: defer
+2024-01-15 16:29:17,869 INFO    HandlerThread:13090 [handler.py:handle_request_defer():143] handle defer: 4
+2024-01-15 16:29:17,869 DEBUG   SenderThread:13090 [sender.py:send_request():196] send_request: defer
+2024-01-15 16:29:17,869 INFO    SenderThread:13090 [sender.py:send_request_defer():312] handle sender defer: 4
+2024-01-15 16:29:17,966 DEBUG   HandlerThread:13090 [handler.py:handle_request():126] handle_request: poll_exit
+2024-01-15 16:29:18,081 INFO    SenderThread:13090 [sender.py:transition_state():316] send defer: 5
+2024-01-15 16:29:18,081 DEBUG   SenderThread:13090 [sender.py:send_request():196] send_request: poll_exit
+2024-01-15 16:29:18,082 DEBUG   HandlerThread:13090 [handler.py:handle_request():126] handle_request: defer
+2024-01-15 16:29:18,082 INFO    HandlerThread:13090 [handler.py:handle_request_defer():143] handle defer: 5
+2024-01-15 16:29:18,082 DEBUG   SenderThread:13090 [sender.py:send_request():196] send_request: defer
+2024-01-15 16:29:18,082 INFO    SenderThread:13090 [sender.py:send_request_defer():312] handle sender defer: 5
+2024-01-15 16:29:18,082 INFO    SenderThread:13090 [dir_watcher.py:finish():283] shutting down directory watcher
+2024-01-15 16:29:18,183 DEBUG   HandlerThread:13090 [handler.py:handle_request():126] handle_request: poll_exit
+2024-01-15 16:29:18,727 INFO    SenderThread:13090 [dir_watcher.py:_on_file_modified():230] file/dir modified: /home/mirai1/ppo-implementation-details/wandb/run-20240115_162908-36mepiw6/files/config.yaml
+2024-01-15 16:29:18,727 INFO    SenderThread:13090 [dir_watcher.py:_on_file_modified():230] file/dir modified: /home/mirai1/ppo-implementation-details/wandb/run-20240115_162908-36mepiw6/files/wandb-summary.json
+2024-01-15 16:29:18,727 INFO    SenderThread:13090 [dir_watcher.py:finish():313] scan: /home/mirai1/ppo-implementation-details/wandb/run-20240115_162908-36mepiw6/files
+2024-01-15 16:29:18,727 INFO    SenderThread:13090 [dir_watcher.py:finish():327] scan save: /home/mirai1/ppo-implementation-details/wandb/run-20240115_162908-36mepiw6/files/requirements.txt requirements.txt
+2024-01-15 16:29:18,727 INFO    SenderThread:13090 [dir_watcher.py:finish():327] scan save: /home/mirai1/ppo-implementation-details/wandb/run-20240115_162908-36mepiw6/files/events.out.tfevents.1705303748.moonshot-laptop.13047.0 events.out.tfevents.1705303748.moonshot-laptop.13047.0
+2024-01-15 16:29:18,727 INFO    SenderThread:13090 [dir_watcher.py:finish():327] scan save: /home/mirai1/ppo-implementation-details/wandb/run-20240115_162908-36mepiw6/files/conda-environment.yaml conda-environment.yaml
+2024-01-15 16:29:18,727 INFO    SenderThread:13090 [dir_watcher.py:finish():327] scan save: /home/mirai1/ppo-implementation-details/wandb/run-20240115_162908-36mepiw6/files/wandb-metadata.json wandb-metadata.json
+2024-01-15 16:29:18,729 INFO    SenderThread:13090 [dir_watcher.py:finish():327] scan save: /home/mirai1/ppo-implementation-details/wandb/run-20240115_162908-36mepiw6/files/diff.patch diff.patch
+2024-01-15 16:29:18,729 INFO    SenderThread:13090 [dir_watcher.py:finish():327] scan save: /home/mirai1/ppo-implementation-details/wandb/run-20240115_162908-36mepiw6/files/wandb-summary.json wandb-summary.json
+2024-01-15 16:29:18,729 INFO    SenderThread:13090 [dir_watcher.py:finish():327] scan save: /home/mirai1/ppo-implementation-details/wandb/run-20240115_162908-36mepiw6/files/config.yaml config.yaml
+2024-01-15 16:29:18,729 INFO    SenderThread:13090 [dir_watcher.py:finish():327] scan save: /home/mirai1/ppo-implementation-details/wandb/run-20240115_162908-36mepiw6/files/output.log output.log
+2024-01-15 16:29:18,731 INFO    SenderThread:13090 [dir_watcher.py:finish():327] scan save: /home/mirai1/ppo-implementation-details/wandb/run-20240115_162908-36mepiw6/files/code/ppo.py code/ppo.py
+2024-01-15 16:29:18,731 INFO    SenderThread:13090 [sender.py:transition_state():316] send defer: 6
+2024-01-15 16:29:18,731 DEBUG   SenderThread:13090 [sender.py:send_request():196] send_request: poll_exit
+2024-01-15 16:29:18,733 DEBUG   HandlerThread:13090 [handler.py:handle_request():126] handle_request: defer
+2024-01-15 16:29:18,733 INFO    HandlerThread:13090 [handler.py:handle_request_defer():143] handle defer: 6
+2024-01-15 16:29:18,734 DEBUG   SenderThread:13090 [sender.py:send_request():196] send_request: defer
+2024-01-15 16:29:18,734 INFO    SenderThread:13090 [sender.py:send_request_defer():312] handle sender defer: 6
+2024-01-15 16:29:18,734 INFO    SenderThread:13090 [file_pusher.py:finish():177] shutting down file pusher
+2024-01-15 16:29:18,832 DEBUG   HandlerThread:13090 [handler.py:handle_request():126] handle_request: poll_exit
+2024-01-15 16:29:18,832 DEBUG   SenderThread:13090 [sender.py:send_request():196] send_request: poll_exit
+2024-01-15 16:29:18,934 DEBUG   HandlerThread:13090 [handler.py:handle_request():126] handle_request: poll_exit
+2024-01-15 16:29:18,934 DEBUG   SenderThread:13090 [sender.py:send_request():196] send_request: poll_exit
+2024-01-15 16:29:19,035 DEBUG   HandlerThread:13090 [handler.py:handle_request():126] handle_request: poll_exit
+2024-01-15 16:29:19,035 DEBUG   SenderThread:13090 [sender.py:send_request():196] send_request: poll_exit
+2024-01-15 16:29:19,136 DEBUG   HandlerThread:13090 [handler.py:handle_request():126] handle_request: poll_exit
+2024-01-15 16:29:19,136 DEBUG   SenderThread:13090 [sender.py:send_request():196] send_request: poll_exit
+2024-01-15 16:29:19,234 INFO    Thread-17 :13090 [upload_job.py:push():137] Uploaded file /home/mirai1/ppo-implementation-details/wandb/run-20240115_162908-36mepiw6/files/requirements.txt
+2024-01-15 16:29:19,238 DEBUG   HandlerThread:13090 [handler.py:handle_request():126] handle_request: poll_exit
+2024-01-15 16:29:19,238 DEBUG   SenderThread:13090 [sender.py:send_request():196] send_request: poll_exit
+2024-01-15 16:29:19,244 INFO    Thread-20 :13090 [upload_job.py:push():137] Uploaded file /home/mirai1/ppo-implementation-details/wandb/run-20240115_162908-36mepiw6/files/output.log
+2024-01-15 16:29:19,288 INFO    Thread-18 :13090 [upload_job.py:push():137] Uploaded file /home/mirai1/ppo-implementation-details/wandb/run-20240115_162908-36mepiw6/files/wandb-summary.json
+2024-01-15 16:29:19,330 INFO    Thread-19 :13090 [upload_job.py:push():137] Uploaded file /home/mirai1/ppo-implementation-details/wandb/run-20240115_162908-36mepiw6/files/config.yaml
+2024-01-15 16:29:19,340 DEBUG   HandlerThread:13090 [handler.py:handle_request():126] handle_request: poll_exit
+2024-01-15 16:29:19,340 DEBUG   SenderThread:13090 [sender.py:send_request():196] send_request: poll_exit
+2024-01-15 16:29:19,442 DEBUG   HandlerThread:13090 [handler.py:handle_request():126] handle_request: poll_exit
+2024-01-15 16:29:19,442 DEBUG   SenderThread:13090 [sender.py:send_request():196] send_request: poll_exit
+2024-01-15 16:29:19,531 INFO    Thread-7  :13090 [sender.py:transition_state():316] send defer: 7
+2024-01-15 16:29:19,531 DEBUG   HandlerThread:13090 [handler.py:handle_request():126] handle_request: defer
+2024-01-15 16:29:19,531 INFO    HandlerThread:13090 [handler.py:handle_request_defer():143] handle defer: 7
+2024-01-15 16:29:19,531 DEBUG   SenderThread:13090 [sender.py:send_request():196] send_request: defer
+2024-01-15 16:29:19,531 INFO    SenderThread:13090 [sender.py:send_request_defer():312] handle sender defer: 7
+2024-01-15 16:29:19,544 DEBUG   HandlerThread:13090 [handler.py:handle_request():126] handle_request: poll_exit
+2024-01-15 16:29:19,892 INFO    SenderThread:13090 [sender.py:transition_state():316] send defer: 8
+2024-01-15 16:29:19,892 DEBUG   SenderThread:13090 [sender.py:send_request():196] send_request: poll_exit
+2024-01-15 16:29:19,892 DEBUG   HandlerThread:13090 [handler.py:handle_request():126] handle_request: defer
+2024-01-15 16:29:19,892 INFO    HandlerThread:13090 [handler.py:handle_request_defer():143] handle defer: 8
+2024-01-15 16:29:19,893 DEBUG   SenderThread:13090 [sender.py:send_request():196] send_request: defer
+2024-01-15 16:29:19,893 INFO    SenderThread:13090 [sender.py:send_request_defer():312] handle sender defer: 8
+2024-01-15 16:29:19,893 INFO    SenderThread:13090 [sender.py:transition_state():316] send defer: 9
+2024-01-15 16:29:19,893 DEBUG   SenderThread:13090 [sender.py:send():182] send: final
+2024-01-15 16:29:19,893 DEBUG   HandlerThread:13090 [handler.py:handle_request():126] handle_request: defer
+2024-01-15 16:29:19,893 DEBUG   SenderThread:13090 [sender.py:send():182] send: footer
+2024-01-15 16:29:19,893 INFO    HandlerThread:13090 [handler.py:handle_request_defer():143] handle defer: 9
+2024-01-15 16:29:19,893 DEBUG   SenderThread:13090 [sender.py:send_request():196] send_request: defer
+2024-01-15 16:29:19,893 INFO    SenderThread:13090 [sender.py:send_request_defer():312] handle sender defer: 9
+2024-01-15 16:29:19,993 DEBUG   HandlerThread:13090 [handler.py:handle_request():126] handle_request: poll_exit
+2024-01-15 16:29:19,994 DEBUG   SenderThread:13090 [sender.py:send_request():196] send_request: poll_exit
+2024-01-15 16:29:19,994 INFO    SenderThread:13090 [file_pusher.py:join():182] waiting for file pusher
+2024-01-15 16:29:19,994 DEBUG   HandlerThread:13090 [handler.py:handle_request():126] handle_request: get_summary
+2024-01-15 16:29:19,995 DEBUG   HandlerThread:13090 [handler.py:handle_request():126] handle_request: sampled_history
+2024-01-15 16:29:19,995 DEBUG   HandlerThread:13090 [handler.py:handle_request():126] handle_request: shutdown
+2024-01-15 16:29:19,995 INFO    HandlerThread:13090 [handler.py:finish():683] shutting down handler
+2024-01-15 16:29:20,893 INFO    WriterThread:13090 [datastore.py:close():281] close: /home/mirai1/ppo-implementation-details/wandb/run-20240115_162908-36mepiw6/run-36mepiw6.wandb
+2024-01-15 16:29:20,994 INFO    SenderThread:13090 [sender.py:finish():979] shutting down sender
+2024-01-15 16:29:20,994 INFO    SenderThread:13090 [file_pusher.py:finish():177] shutting down file pusher
+2024-01-15 16:29:20,994 INFO    SenderThread:13090 [file_pusher.py:join():182] waiting for file pusher
+2024-01-15 16:29:20,995 INFO    MainThread:13090 [internal.py:handle_exit():76] Internal process exited

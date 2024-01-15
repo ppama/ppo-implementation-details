@@ -4,7 +4,6 @@ import random
 import time
 from distutils.util import strtobool
 
-#import gymnasium as gym
 import gym
 import numpy as np
 import torch
@@ -13,17 +12,18 @@ import torch.optim as optim
 from torch.distributions.categorical import Categorical
 from torch.utils.tensorboard import SummaryWriter
 
-def make_env(gym_id, seed, idx, capture_video, run_name): 
+def make_env(gym_id, seed, idx, capture_video, run_name):
     def thunk():
         env = gym.make(gym_id)
         env = gym.wrappers.RecordEpisodeStatistics(env)
         if capture_video:
             if idx == 0:
-                env = gym.wrappers.RecordVideo(env, "videos", record_video_trigger=lambda t : t % 1000 == 0)
+                env = gym.wrappers.RecordVideo(env, f"videos/{run_name}")
         env.seed(seed)
         env.action_space.seed(seed)
         env.observation_space.seed(seed)
         return env
+
     return thunk
 
 def layer_init(layer, std=np.sqrt(2), bias_const=0.0):
@@ -50,6 +50,17 @@ class Agent(nn.Module):
             layer_init(nn.Linear(64, envs.single_action_space.n), std=0.01), 
             # ensures layer's parameters have similar scalar valus, prob. of taking action is similar
         )
+    
+    def get_value(self, x): #implement critic inference by passing observation to critic network
+        return self.critic(x)
+    
+    def get_action_and_value(self, x, action=None):
+        logits = self.actor(x) #unnormalized action probabilities
+        probs = Categorical(logits=logits) #softmax operation to get action probabilities
+        if action is None:
+            action = probs.sample()
+        return action, probs.log_prob(action), probs.entropy(), self.critic(x) #return action, log prob of action, value of state
+    
 
 
 def parse_args():
@@ -82,7 +93,37 @@ def parse_args():
                         help='Number of parallel game environments')
     parser.add_argument('--num-steps', type=int, default=128,
                         help='the number of steps to run in each environment per policy rollout') # rollouts data = 4*128 = 512
+    parser.add_argument('--anneal-lr', type=lambda x: bool(strtobool(x)), default=True, nargs="?", const=True,
+                        help='Toggle learning rate annealing for policy and value networks')
+    parser.add_argument('--gae', type=lambda x: bool(strtobool(x)), default=True, nargs="?", const=True,
+                        help='Use GAE for advantage computation')
+    parser.add_argument('--gamma', type=float, default=0.99,
+                        help='the discount factor gamma')
+    parser.add_argument('--gae-lambda', type=float, default=0.95,
+                        help='the lambda for the general advantage estimation')
+    parser.add_argument('--num-minibatches', type=int, default=4,
+                        help='the number of minibatches for PPO')
+    parser.add_argument('--ppo-epoch', type=int, default=4,
+                        help='the K epochs to update the policy')
+    parser.add_argument('--norm-adv', type=lambda x: bool(strtobool(x)), default=True, nargs="?", const=True,
+                        help='Toggle advantage normalization')
+    parser.add_argument('--clip-coef', type=float, default=0.2,
+                        help='the surrogate clipping coefficient')
+    parser.add_argument('--clip-vloss', type=lambda x: bool(strtobool(x)), default=True, nargs="?", const=True,
+                        help='Toggles whether or not to use a cliped loss for the value function, as per the paper.')
+    parser.add_argument('--ent-coef', type=float, default=0.01,
+                        help='coefficient of the entropy')
+    parser.add_argument('--vf-coef', type=float, default=0.5,
+                        help='the coefficient of the value function')
+    parser.add_argument('--max-grad-norm', type=float, default=0.5,
+                        help='the maximum norm for the gradient clipping')
+    parser.add_argument('--target-kl', type=float, default=None, # default value 0.015
+                        help='the target KL divergence threshold')
+    parser.add_argument("--update-epochs", type=int, default=4,
+        help="the K epochs to update the policy")
     args = parser.parse_args()
+    args.batch_size = args.num_envs * args.num_steps # 512
+    args.minibatch_size = int(args.batch_size // args.num_minibatches) # 128
     return args
 
 
@@ -123,14 +164,11 @@ if __name__ == "__main__":
 
     # env setup
     envs = gym.vector.SyncVectorEnv(
-        [make_env(args.gym_id, args.seed + i, i, args.capture_video, run_name)
-    for i in range(args.num_envs)])
+        [make_env(args.gym_id, args.seed + i, i, args.capture_video, run_name) for i in range(args.num_envs)]
+    )
     assert isinstance(envs.single_action_space, gym.spaces.Discrete), "only discrete action space is supported"
-    print("envs.single_observation_space", envs.single_observation_space.shape)
-    print("envs.single_action_space", envs.single_action_space.n)
 
     agent = Agent(envs).to(device)
-    print(agent)
     optimizer = optim.Adam(agent.parameters(), lr=args.learning_rate, eps=1e-5)
 
     # ALGO Logic: Storage for epoch data
@@ -146,5 +184,150 @@ if __name__ == "__main__":
     start_time = time.time()
     next_obs = torch.Tensor(envs.reset()).to(device)
     next_done = torch.zeros(args.num_envs).to(device)
+    num_updates = args.total_timesteps // args.batch_size
 
+    # set up training loop from num_updates
+    for update in range(1, num_updates+1): # 1 update = 1 training loop iteration
+        # Annealing the learning rate if instructed to do so.
+        if args.anneal_lr:
+            frac = 1.0 - (update - 1.0) / num_updates # =1 at first update, linearly decrease to 0 at last update
+            lrnow = args.learning_rate * frac
+            optimizer.param_groups[0]["lr"] = lrnow
 
+        for step in range(0, args.num_steps): # policy rollout implemented as inner loop with range of num steps
+            global_step += 1 * args.num_envs
+            obs[step] = next_obs
+            dones[step] = next_done
+
+            # ALGO LOGIC: action logic
+            with torch.no_grad():
+                action, logprob, _, value = agent.get_action_and_value(next_obs) # get action from policy network
+                values[step] = value.flatten() # value of state
+            actions[step] = action
+            logprobs[step] = logprob
+
+            # TRY NOT TO MODIFY: execute the game and log data.
+            next_obs, reward, done, info  = envs.step(action.cpu().numpy()) # action step transferred to CPU
+            rewards[step] = torch.tensor(reward).to(device).view(-1) #transfer return to reward back to GPU
+            next_obs, next_done = torch.Tensor(next_obs).to(device), torch.Tensor(done).to(device)
+
+            for item in info:
+                if 'episode' in item.keys():
+                    print(f"global_step={global_step}, episodic_return={item['episode']['r']}") # print episodic return
+                    writer.add_scalar("charts/episode_return", item['episode']['r'], global_step)
+                    writer.add_scalar("charts/episode_length", item['episode']['l'], global_step)
+                    break
+        
+        # bootstrap reward if not done. reached max num steps
+        with torch.no_grad():
+            next_value = agent.get_value(next_obs).reshape(1, -1)
+            if args.gae:
+                advantages = torch.zeros_like(rewards).to(device)
+                lastgaelam = 0
+                for t in reversed(range(args.num_steps)):
+                    if t == args.num_steps - 1:
+                        nextnonterminal = 1.0 - next_done
+                        nextvalues = next_value
+                    else:
+                        nextnonterminal = 1.0 - dones[t+1]
+                        nextvalues = values[t+1]
+                    delta = rewards[t] + args.gamma * nextvalues * nextnonterminal - values[t]
+                    advantages[t] = lastgaelam = delta + args.gamma * args.gae_lambda * nextnonterminal * lastgaelam
+                returns = advantages + values
+            else:
+                returns = torch.zeros_like(rewards).to(device)
+                for t in reversed(range(args.num_steps)):
+                    if t == args.num_steps - 1:
+                        nextnonterminal = 1.0 - next_done
+                        next_return = next_value
+                    else:
+                        nextnonterminal = 1.0 - dones[t + 1]
+                        next_return = returns[t + 1]
+                    returns[t] = rewards[t] + args.gamma * nextnonterminal * next_return
+                advantages = returns - values
+        
+        # flatten the batch
+        b_obs = obs.reshape((-1,)+envs.single_observation_space.shape)
+        b_logprobs = logprobs.reshape(-1)
+        b_actions = actions.reshape((-1,)+envs.single_action_space.shape)
+        b_advantages = advantages.reshape(-1)
+        b_returns = returns.reshape(-1)
+        b_values = values.reshape(-1)
+
+        # Optimizaing the policy and value network
+        b_inds = np.arange(args.batch_size) # acquire batch indices
+        clipfracs = [] # clipped fraction: how often the clipped objective is used
+        for epoch in range(args.update_epochs):
+            np.random.shuffle(b_inds)
+            # minibatch loop
+            for start in range(0, args.batch_size, args.minibatch_size): # loop through entire batch, 1 minibatch at a time
+                end = start + args.minibatch_size
+                mb_inds = b_inds[start:end]
+
+                _, newlogprob, entropy, newvalue = agent.get_action_and_value(b_obs[mb_inds], b_actions.long()[mb_inds])
+                logratio = newlogprob - b_logprobs[mb_inds]
+                ratio = logratio.exp()
+
+                with torch.no_grad():
+                    # calculate approx_kl for early stopping http://joschu.net/blog/kl-approx.html
+                    old_approx_kl = (-logratio).mean() # how aggressively the policy updates
+                    approx_kl = ((ratio - 1) - logratio).mean()
+                    clipfracs += [((ratio - 1.0).abs() > args.clip_coef).float().mean().item()]
+
+                mb_advantages = b_advantages[mb_inds]
+                if args.norm_adv:
+                    mb_advantages = (mb_advantages - mb_advantages.mean()) / (mb_advantages.std() + 1e-8)
+
+                # Policy loss (CLIP function)
+                pg_loss1 = -mb_advantages * ratio
+                pg_loss2 = -mb_advantages * torch.clamp(ratio, 1-args.clip_coef, 1+args.clip_coef)
+                pg_loss = torch.max(pg_loss1, pg_loss2).mean()
+
+                # Value loss
+                newvalue = newvalue.view(-1)
+                if args.clip_vloss:
+                    v_loss_unclipped = (newvalue - b_returns[mb_inds]) ** 2
+                    v_clipped = b_values[mb_inds] + torch.clamp(
+                        newvalue - b_values[mb_inds], 
+                        -args.clip_coef, 
+                        args.clip_coef
+                    )
+                    v_loss_clipped = (v_clipped - b_returns[mb_inds]) ** 2
+                    v_loss_max = torch.max(v_loss_unclipped, v_loss_clipped)
+                    v_loss = 0.5 * v_loss_max.mean()
+                else:
+                    v_loss = 0.5 * ((newvalue - b_returns[mb_inds]) ** 2).mean()
+
+                # Entropy loss
+                entropy_loss = entropy.mean()
+                loss = pg_loss - args.ent_coef * entropy_loss + v_loss *args.vf_coef # minimize policy loss and value loss but maximize entropy loss
+
+                #maximum gradient clipping
+                optimizer.zero_grad()
+                loss.backward()
+                nn.utils.clip_grad_norm_(agent.parameters(), args.max_grad_norm)
+                optimizer.step()
+            
+            if args.target_kl is not None:
+                if approx_kl > args.target_kl:
+                    break
+        
+        y_pred, y_true = b_values.cpu().numpy(), b_returns.cpu().numpy()
+        var_y = np.var(y_true)
+        explained_var = np.nan if var_y == 0 else 1 - np.var(y_true - y_pred) / var_y 
+        #explained variance tells if the value fxn is a good indicator of the return
+
+        # TRY NOT TO MODIFY: record rewards for plotting purposes
+        writer.add_scalar("charts/learning_rate", optimizer.param_groups[0]["lr"], global_step)
+        writer.add_scalar("losses/value_loss", v_loss.item(), global_step)
+        writer.add_scalar("losses/policy_loss", pg_loss.item(), global_step)
+        writer.add_scalar("losses/entropy", entropy_loss.item(), global_step)
+        writer.add_scalar("losses/old_approx_kl", old_approx_kl.item(), global_step)
+        writer.add_scalar("losses/approx_kl", approx_kl.item(), global_step)
+        writer.add_scalar("losses/clipfrac", np.mean(clipfracs), global_step)
+        writer.add_scalar("losses/explained_variance", explained_var, global_step)
+        print("SPS:", int(global_step / (time.time() - start_time)))
+        writer.add_scalar("charts/SPS", int(global_step / (time.time() - start_time)), global_step)
+
+    envs.close()
+    writer.close()
