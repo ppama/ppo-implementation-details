@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/home/mirai1/ppo-implementation-details/ppo.py", line 83, in <module>
+    observation, reward, terminated, truncated, info = env.step(action)
+ValueError: not enough values to unpack (expected 5, got 4)

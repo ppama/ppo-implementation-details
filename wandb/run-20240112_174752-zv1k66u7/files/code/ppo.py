@@ -9,48 +9,8 @@ import gym
 import numpy as np
 import torch
 import torch.nn as nn
-import torch.optim as optim
 from torch.distributions.categorical import Categorical
 from torch.utils.tensorboard import SummaryWriter
-
-def make_env(gym_id, seed, idx, capture_video, run_name): 
-    def thunk():
-        env = gym.make(gym_id)
-        env = gym.wrappers.RecordEpisodeStatistics(env)
-        if capture_video:
-            if idx == 0:
-                env = gym.wrappers.RecordVideo(env, "videos", record_video_trigger=lambda t : t % 1000 == 0)
-        env.seed(seed)
-        env.action_space.seed(seed)
-        env.observation_space.seed(seed)
-        return env
-    return thunk
-
-def layer_init(layer, std=np.sqrt(2), bias_const=0.0):
-    torch.nn.init.orthogonal_(layer.weight, std)
-    torch.nn.init.constant_(layer.bias, bias_const)
-    return layer
-
-class Agent(nn.Module):
-    def __init__(self, envs):
-        super(Agent, self).__init__()
-        self.critic = nn.Sequential(
-            layer_init(nn.Linear(np.array(envs.single_observation_space.shape).prod(), 64)),
-            nn.Tanh(),
-            layer_init(nn.Linear(64, 64)),
-            nn.Tanh(),
-            layer_init(nn.Linear(64, 1), std=1.),
-        )
-
-        self.actor = nn.Sequential(
-            layer_init(nn.Linear(np.array(envs.single_observation_space.shape).prod(), 64)),
-            nn.Tanh(),
-            layer_init(nn.Linear(64, 64)),
-            nn.Tanh(),
-            layer_init(nn.Linear(64, envs.single_action_space.n), std=0.01), 
-            # ensures layer's parameters have similar scalar valus, prob. of taking action is similar
-        )
-
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -80,8 +40,6 @@ def parse_args():
     # Algorithm specific arguments
     parser.add_argument('--num-envs', type=int, default=4,
                         help='Number of parallel game environments')
-    parser.add_argument('--num-steps', type=int, default=128,
-                        help='the number of steps to run in each environment per policy rollout') # rollouts data = 4*128 = 512
     args = parser.parse_args()
     return args
 
@@ -121,30 +79,40 @@ if __name__ == "__main__":
 
     device = torch.device("cuda" if torch.cuda.is_available() and args.cuda else "cpu")
 
-    # env setup
-    envs = gym.vector.SyncVectorEnv(
-        [make_env(args.gym_id, args.seed + i, i, args.capture_video, run_name)
-    for i in range(args.num_envs)])
-    assert isinstance(envs.single_action_space, gym.spaces.Discrete), "only discrete action space is supported"
-    print("envs.single_observation_space", envs.single_observation_space.shape)
-    print("envs.single_action_space", envs.single_action_space.n)
+    # set up vector environment
 
-    agent = Agent(envs).to(device)
-    print(agent)
-    optimizer = optim.Adam(agent.parameters(), lr=args.learning_rate, eps=1e-5)
+    env = gym.make("CartPole-v1") # initialize env
+    env = gym.wrappers.RecordEpisodeStatistics(env) # records episode reward in `info['episode']['r']`
+    env = gym.wrappers.RecordVideo(env, "videos", record_video_trigger=lambda t : t % 100 == 0) # records a video every 100 episodes
+    observation = env.reset() # reset env, get first obs
+    for _ in range(200):
+        action = env.action_space.sample() # sample an action to step env
+        observation, reward, terminated, truncated, info = env.step(action) 
+        if terminated or truncated:
+            observation = env.reset()
+            print(f"episodic return: {info['episode']['r']}") # wrapper populates info variable with episodic return
+        env.close()
 
-    # ALGO Logic: Storage for epoch data
-    obs = torch.zeros((args.num_steps, args.num_envs) + envs.single_observation_space.shape).to(device)
-    actions = torch.zeros((args.num_steps, args.num_envs) + envs.single_action_space.shape).to(device)
-    logprobs = torch.zeros((args.num_steps, args.num_envs)).to(device)
-    rewards = torch.zeros((args.num_steps, args.num_envs)).to(device)
-    dones = torch.zeros((args.num_steps, args.num_envs)).to(device)
-    values = torch.zeros((args.num_steps, args.num_envs)).to(device)
-
-    # TRY NOT TO MODIFY: start the game, global step for tracking number of environment steps 
-    global_step = 0
-    start_time = time.time()
-    next_obs = torch.Tensor(envs.reset()).to(device)
-    next_done = torch.zeros(args.num_envs).to(device)
-
-
+    def make_env(gym_id, seed, idx, capture_video, run_name):
+        def thunk(): # function that makes a gym environment
+            env = gym.make(gym_id)
+            env = gym.wrappers.RecordEpisodeStatistics(env)
+            if capture_video:
+                if idx == 0: # only record video for the first worker(sub-enviroment)
+                    env = gym.wrappers.RecordVideo(env, "videos", record_video_trigger=lambda t : t % 1000 == 0)
+            env.seed(seed)
+            env.action_space.seed(seed)
+            env.observation_space.seed(seed)
+            return env
+        return thunk
+    
+    # API for creating a vector environment by passing a list of env creating functions
+    envs = gym.vector.SyncVectorEnv([make_env(args.gym_id)]) # vectorized environments are synchronized environments that run in parallel
+    observation = envs.reset()
+    for _ in range(200):
+        action = envs.action_space.sample()
+        observation, reward, terminated, truncated, info = envs.step(action)
+        for item in info:
+            if "episode" in item.keys():
+                print(f"episodic return: {item['episode']['r']}")
+                # NOTE: there is no `observation = env.reset()` here, this is because the vector environments automatically reset when all envs are terminated
